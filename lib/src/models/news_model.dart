@@ -106,11 +106,13 @@ class Source {
       };
 }
 
+// ignore: constant_identifier_names
 enum Id { GOOGLE_NEWS, THE_VERGE }
 
 final idValues =
     EnumValues({"google-news": Id.GOOGLE_NEWS, "the-verge": Id.THE_VERGE});
 
+// ignore: constant_identifier_names
 enum Name { GOOGLE_NEWS, THE_VERGE, YOU_TUBE, INSIDER_GAMING_COM }
 
 final nameValues = EnumValues({

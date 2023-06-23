@@ -23,14 +23,15 @@ class _Navegacion extends StatelessWidget {
   Widget build(BuildContext context) {
     final navegacionModel = Provider.of<_NavegacionModel>(context);
     return BottomNavigationBar(
+      selectedItemColor: Colors.red,
       currentIndex: navegacionModel.paginaActual,
       onTap: (i) {
         navegacionModel.paginaActual = i;
       },
       items: const [
         BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined), label: 'Para ti'),
-        BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Nosotros'),
+            icon: Icon(Icons.person_outlined), label: 'News Usa'),
+        BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Categorias'),
       ],
     );
   }

@@ -103,6 +103,12 @@ class _TarjetaImagen extends StatelessWidget {
                     placeholder: const AssetImage('assets/gifs/giphy.gif'),
                     image: NetworkImage(noticia.urlToImage!),
                     fit: BoxFit.cover,
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return const Image(
+                        image: AssetImage('assets/image/no-image.png'),
+                        fit: BoxFit.cover,
+                      );
+                    },
                   )
                 : const Image(
                     image: AssetImage('assets/image/no-image.png'),
@@ -130,6 +136,7 @@ class _TarjetaBotones extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

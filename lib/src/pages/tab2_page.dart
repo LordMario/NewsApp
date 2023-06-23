@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/src/models/category_model.dart';
 import 'package:news_app/src/services/services.dart';
-import 'package:news_app/src/widgets/widgets.dart';
+import 'package:news_app/src/widgets/lista_noticias.dart';
 import 'package:provider/provider.dart';
 
 class Tab2Pages extends StatelessWidget {
@@ -9,19 +9,20 @@ class Tab2Pages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final headlines = Provider.of<NewsService>(context).headlines;
+    final categoriaService = Provider.of<NewsService>(context);
+    final categorias = categoriaService.categoryArticuleSeleted;
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
-            Expanded(child: _ListaCategorias()),
-            Scaffold(
-              body: (headlines.isEmpty)
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListaNoticias(noticias: headlines),
-            ),
+            _ListaCategorias(),
+            if (!categoriaService.isLoading)
+              Expanded(child: ListaNoticias(noticias: categorias)),
+            if (categoriaService.isLoading)
+              const Expanded(
+                  child: Center(
+                child: CircularProgressIndicator(),
+              ))
           ],
         ),
       ),
@@ -34,25 +35,30 @@ class _ListaCategorias extends StatelessWidget {
   Widget build(BuildContext context) {
     final categorias = Provider.of<NewsService>(context).categorias;
 
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      itemCount: categorias.length,
-      itemBuilder: (context, index) {
-        final nombre = categorias[index].name;
-        return Padding(
-          padding: const EdgeInsets.all(8),
-          child: Column(
-            children: [
-              _CategoryBoton(categoria: categorias[index]),
-              const SizedBox(
-                height: 5,
-              ),
-              Text('${nombre[0].toUpperCase()}${nombre.substring(1)}'),
-            ],
-          ),
-        );
-      },
+    return Container(
+      width: double.infinity,
+      height: 80,
+      padding: const EdgeInsets.all(0),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: categorias.length,
+        itemBuilder: (context, index) {
+          final nombre = categorias[index].name;
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                _CategoryBoton(categoria: categorias[index]),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text('${nombre[0].toUpperCase()}${nombre.substring(1)}'),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -65,10 +71,11 @@ class _CategoryBoton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoriaService = Provider.of<NewsService>(context);
+    final newsService = Provider.of<NewsService>(context);
     return GestureDetector(
       onTap: () {
-        categoriaService.getNewsByCategory(categoria.name);
+        final newsService = Provider.of<NewsService>(context, listen: false);
+        newsService.categoryArticle = categoria.name;
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -78,7 +85,10 @@ class _CategoryBoton extends StatelessWidget {
           shape: BoxShape.circle,
           color: Colors.white,
         ),
-        child: Icon(categoria.icon, color: Colors.black54),
+        child: Icon(categoria.icon,
+            color: (newsService.categoryArticles == categoria.name)
+                ? Colors.red
+                : Colors.black54),
       ),
     );
   }
